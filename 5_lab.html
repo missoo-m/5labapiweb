@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" type="text/css" href="5_lab.css">
+</head>
+<body>
+    <div class="container">
+        <div class = "block">
+            <form action="" method="post" id="form" class="form">
+                <div class="input">
+                    <label for="series">Введите серию автомобиля</label>
+                    <input type="text" name="series" id="series" placeholder="Серия автомобиля" required>
+                </div>
+                <div class="input">
+                    <label for = "year">Введите год выпуска автомобиля</label>
+                    <input type="number" name="year" id="year" pattern="^\d{4}$" placeholder="Год выпуска" required>
+                </div>
+                <div class="input">
+                    <label for = "purpose">Введите назначение автомобиля</label>
+                    <input type="text" name="purpose" id="purpose" placeholder="Назначение" required>
+                </div>
+                <div class="input">
+                    <label for = "manufacter">Введите производителя автомобиля</label>
+                    <input type="text" name="manufacter" id="manufacter"  placeholder="Производитель" required>
+                </div>
+                <div class="b_container">
+                    <button type="submit" class="but">Добавить автомобиль</button>
+                    <button type="button" class="but" id="clear_but">Очистить</button>
+                </div>
+            </form>
+            <select id="select_item"></select>
+            <div class="b_container">
+                <button id="delete_car">Удалить авто</button>
+                <button id="show_manufacter">Показать производителей</button>
+            </div>
+            <div id="new_properties_container"></div>
+            <div class="b_container">
+                <button id="add_new_input">Добавить свойство</button>
+                <button id="search_car">Поиск авто</button>
+            </div>
+            <table id="car_table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Серия</th>
+                        <th>Год</th>
+                        <th>Назначение</th>
+                        <th>Производитель</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="5_lab.js"></script>
+</body>
+</html>
