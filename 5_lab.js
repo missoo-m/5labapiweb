@@ -1,41 +1,36 @@
-var service = 
-{
+var service = {
     cars: JSON.parse(localStorage.getItem('cars')) || [],
-    save_data: function() 
-    {
+    history: JSON.parse(localStorage.getItem('history')) || [],
+    save_data: function() {
         localStorage.setItem('cars', JSON.stringify(this.cars));
+        localStorage.setItem('history', JSON.stringify(this.history));
     },
-    add_car: function(series, year, purpose, manufacter) 
-    {
+    add_car: function(series, year, purpose, manufacter) {
         let id = this.cars.length ? this.cars[this.cars.length - 1].id + 1 : 1;
         this.cars.push({ id, series, year, purpose, manufacter });
+        this.history.push(`Добавлена новая запись с ID ${id}`);
         this.save_data();
     },
-    remove_car: function(id) 
-    {
+    remove_car: function(id) {
         this.cars = this.cars.filter(car => car.id !== id);
+        this.history.push(`Запись с ID ${id} была удалена`);
         this.save_data();
         update_tabl();
     },
-    get_manufacter_by_purpose: function(purpose) 
-    {
+    get_manufacter_by_purpose: function(purpose) {
         return [...new Set(this.cars.filter(car => car.purpose === purpose).map(car => car.manufacter))];
     },
-    add_property_to_car: function(id, key, value) 
-    {
+    add_property_to_car: function(id, key, value) {
         let car = this.cars.find(car => car.id === id);
-        if (car) 
-        {
+        if (car) {
             car[key] = value;
             this.save_data();
             update_tabl();
         }
     },
-    add_new_input_field: function(propertyName)
-    {
+    add_new_input_field: function(propertyName) {
         let container = document.getElementById('new_properties_container');
-        if (document.getElementById(`input_${propertyName}`)) 
-        {
+        if (document.getElementById(`input_${propertyName}`)) {
             alert("Это свойство уже добавлено!");
             return;
         }
@@ -49,15 +44,12 @@ var service =
         `;
         container.appendChild(div);
     },
-    find_car_by_id: function(id) 
-    {
+    find_car_by_id: function(id) {
         return this.cars.find(car => car.id === id) || null;
     },
-    display_car_info: function(id) 
-    {
+    display_car_info: function(id) {
         let car = this.find_car_by_id(id);
-        if (car) 
-        {
+        if (car) {
             let infoText = 
             `
                 Серия: ${car.series}  
@@ -66,62 +58,54 @@ var service =
                 Производитель: ${car.manufacter}
             `;
             let additionalProps = Object.keys(car).filter(key => !["id", "series", "year", "purpose", "manufacter"].includes(key));
-            additionalProps.forEach(key => 
-            {
+            additionalProps.forEach(key => {
                 infoText += `\n${key}: ${car[key]}`;
             });
             alert(infoText);
-        } else 
-        {
+        } else {
             alert("Автомобиль не найден!");
         }
     }
 };
-function save_new_property(propertyName) 
-{
+
+function save_new_property(propertyName) {
     let id = parseInt(document.getElementById('select_item').value);
     let value = document.getElementById(`input_${propertyName}`).value;
-    if (!id) 
-    {
+    if (!id) {
         alert("Выберите автомобиль!");
         return;
     }
-    if (!value) 
-    {
+    if (!value) {
         alert("Введите значение свойства!");
         return;
     }
     service.add_property_to_car(id, propertyName, value);
 }
-function update_car_list() 
-{
+
+function update_car_list() {
     let select = document.getElementById('select_item');
     select.innerHTML = "";
-    service.cars.forEach(car => 
-    {
+    service.cars.forEach(car => {
         let option = document.createElement('option');
         option.value = car.id;
         option.textContent = `ID: ${car.id} (${car.series})`;
         select.appendChild(option);
     });
 }
-function update_table_headers() 
-{
+
+function update_table_headers() {
     let thead = document.getElementById('car_table').querySelector('thead');
-    let allKeys = new Set(service.cars.flatMap(car => Object.keys(car))); 
-    if (allKeys.size > 0) 
-    {
+    let allKeys = new Set(service.cars.flatMap(car => Object.keys(car)));
+    if (allKeys.size > 0) {
         let headerRow = document.createElement('tr');
-        let headerMap = 
-        {
+        let headerMap = {
             id: "ID",
             series: "Серия",
             year: "Год",
             purpose: "Назначение",
             manufacter: "Производитель"
         };
-        allKeys.forEach(key => 
-        {
+        allKeys.forEach(key => {
             let th = document.createElement('th');
             th.textContent = headerMap[key] || key;
             headerRow.appendChild(th);
@@ -130,15 +114,13 @@ function update_table_headers()
         thead.appendChild(headerRow);
     }
 }
-function update_tabl() 
-{
+
+function update_tabl() {
     let tbody = document.getElementById('car_table').querySelector('tbody');
     tbody.innerHTML = "";
-    service.cars.forEach(car => 
-    {
+    service.cars.forEach(car => {
         let row = document.createElement('tr');
-        Object.keys(car).forEach(key => 
-        {
+        Object.keys(car).forEach(key => {
             let cell = document.createElement('td');
             cell.textContent = car[key];
             row.appendChild(cell);
@@ -146,14 +128,26 @@ function update_tabl()
         tbody.appendChild(row);
     });
     update_table_headers();
+    update_history(); // Обновляем историю изменений
 }
-document.addEventListener('DOMContentLoaded', function() 
-{
+
+function update_history() {
+    let historyList = document.getElementById('history_list');
+    historyList.innerHTML = "";
+    service.history.forEach(entry => {
+        let listItem = document.createElement('li');
+        listItem.textContent = entry;
+        historyList.appendChild(listItem);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     update_car_list();
     update_tabl();
+    update_history(); // Обновляем историю при загрузке
 });
-document.getElementById('form').addEventListener('submit', function(e) 
-{
+
+document.getElementById('form').addEventListener('submit', function(e) {
     e.preventDefault();
     let series = document.getElementById('series').value;
     let year = document.getElementById('year').value;
@@ -164,38 +158,35 @@ document.getElementById('form').addEventListener('submit', function(e)
     update_tabl();
     this.reset();
 });
-document.getElementById('clear_but').addEventListener('click', function() 
-{
+
+document.getElementById('clear_but').addEventListener('click', function() {
     document.getElementById('form').reset();
 });
-document.getElementById('delete_car').addEventListener('click', function() 
-{
+
+document.getElementById('delete_car').addEventListener('click', function() {
     let id = parseInt(document.getElementById('select_item').value);
-    if (id) 
-    {
+    if (id) {
         service.remove_car(id);
         update_car_list();
         update_tabl();
     }
 });
-document.getElementById('show_manufacter').addEventListener('click', function() 
-{
+
+document.getElementById('show_manufacter').addEventListener('click', function() {
     let purpose = prompt("Введите назначение:");
-    if (purpose) 
-    {
+    if (purpose) {
         alert("Производители: " + service.get_manufacter_by_purpose(purpose).join(', '));
     }
 });
-document.getElementById('add_new_input').addEventListener('click', function()
-{
+
+document.getElementById('add_new_input').addEventListener('click', function() {
     let propertyName = prompt("Введите название нового свойства:");
-    if (propertyName) 
-    {
+    if (propertyName) {
         service.add_new_input_field(propertyName);
     }
 });
-document.getElementById('search_car').addEventListener('click', function() 
-{
+
+document.getElementById('search_car').addEventListener('click', function() {
     let id = parseInt(prompt("Введите ID автомобиля:"));
     service.display_car_info(id);
 });

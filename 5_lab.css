@@ -191,3 +191,16 @@ button:hover
     background-color: #9B8384; 
     transition: background 0.3s ease-in-out;
 }
+#history_container {
+    margin-top: 20px;
+    width: 95%;
+    max-width: 790px;
+    background-color: #E8E7E7;
+    border-radius: 10px;
+    box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+#history_list {
+    list-style-type: none;
+    padding-left: 0;
+}
