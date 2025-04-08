@@ -128,7 +128,7 @@ function update_tabl() {
         tbody.appendChild(row);
     });
     update_table_headers();
-    update_history(); // Обновляем историю изменений
+    update_history(); 
 }
 
 function update_history() {
@@ -144,7 +144,7 @@ function update_history() {
 document.addEventListener('DOMContentLoaded', function() {
     update_car_list();
     update_tabl();
-    update_history(); // Обновляем историю при загрузке
+    update_history(); 
 });
 
 document.getElementById('form').addEventListener('submit', function(e) {
